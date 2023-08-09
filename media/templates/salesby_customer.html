@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <button class="btn btn-primary mr-2" id="calendarIcon"><i class="fa fa-calendar"></i> Select Date Range</button>
+    </div>
+
+
+
+<div>
+
+    <button class="btn btn-primary mr-2"><i class="fa fa-print"></i> Print</button>
+    <button class="btn btn-success"><i class="fa fa-download"></i> Export</button>
+</div>
+</div>
+
+<section>
+    <div class="row fixed-top" style="top: 7rem;">
+        <div class="col-md-12">
+            <div style="height: 640px;width: 1215px;overflow-y: scroll;">
+                <div class="row">
+                    <div class="col-12 text-center">
+                        <h3 style="font-size: x-large;">Zoho</h3>
+                        <h4 style="font-size: x-large;">Sales by Customer</h4>
+                        <p id="dateRange">From 21 Jan 2023 to 21 Jan 2024</p>
+                        <!-- The input field for the date range picker -->
+                        <input type="text" id="dateRangePicker" class="form-control" style="display: none;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker@3.1.0/daterangepicker.min.js"></script>
+<script>
+   
+
+        
+        $('.fa-calendar').closest('button').click(function () {
+            $('#dateRangePicker').data('daterangepicker').toggle();
+        });
+
+      
+        $('#dateRangePicker').on('apply.daterangepicker', function (ev, picker) {
+            const startDate = picker.startDate.format('YYYY-MM-DD');
+            const endDate = picker.endDate.format('YYYY-MM-DD');
+            const dateRangeElement = document.getElementById('dateRange');
+            dateRangeElement.textContent = `Custom Range: ${startDate} to ${endDate}`;
+        });
+   
+</script>
+
+
+{% endblock %}
