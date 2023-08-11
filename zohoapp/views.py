@@ -7011,4 +7011,7 @@ def reports(request):
     return render(request,'reports.html')    
 
 def salesby_customer(request):
-    return render(request,'salesby_customer.html')
+    customer1 = customer.objects.all()
+    for c in customer1:
+        print(c.customerName)  # This will print the customer names in the console
+    return render(request, 'salesby_customer.html', {'cust': customer1})

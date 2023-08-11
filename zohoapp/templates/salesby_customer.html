@@ -1,127 +1,222 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
     #reportrange .fa-caret-down {
         color: rgb(11, 11, 11);
     }
+
     .daterangepicker .ranges li {
         color: black;
     }
+
     .table-fixed thead {
         position: sticky;
-        top: 5rem; /* Adjust this value to match your design */
-        background-color: #f8f9fa; /* Add a background color for the sticky header */
+        top: 5rem;
+        /* Adjust this value to match your design */
+        background-color: #f8f9fa;
+        /* Add a background color for the sticky header */
     }
-    #table-container {
-        padding-top: 20px; /* Add space above the table */
+
+    .table-container {
+        margin-top: 200px;
+        /* Add margin to push the table below the content */
     }
+
+    .main-content {
+        padding: 15px;
+        /* Add padding for content */
+    }
+
+    @media (max-width: 768px) {
+        .fixed-top {
+            padding-left: 15px;
+            /* Adjust padding for fixed-top */
+        }
+
+        .printable-content {
+            padding: 15px;
+            /* Add padding for printable content */
+        }
+
+        .table-header-placeholder {
+            padding: 100px 0;
+            /* Adjust padding for header placeholder */
+        }
+
+        #salesTable {
+            padding: 15px;
+            /* Add padding for sales table */
+        }
+    }
+
+    @media print {
+
+        /* Hide non-essential elements */
+        body * {
+            visibility: hidden;
+        }
+
+        /* Show only the printable content */
+        .printable-content,
+        .printable-content * {
+            visibility: visible;
+        }
+
+        /* Style the table for the print view */
+        .printable-content table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .printable-content th,
+        .printable-content td {
+            border: 1px solid #000;
+            padding: 8px;
+        }
+
+        /* Adjust font sizes for better readability */
+        .printable-content h3 {
+            font-size: 18px;
+        }
+
+        .printable-content h4 {
+            font-size: 16px;
+        }
+
+        .printable-content p {
+            font-size: 14px;
+            margin: 10px 0;
+        }
+    }
+
+    
 </style>
 
-
 <section>
-    <div class="row fixed-top" style="top: 5rem; padding-left: 150px;">
-        <div class="col-md-12">
-            <div style="display: flex; justify-content: space-between; align-items: center; background: #1b1b1b; padding: 5px 10px; border: 1px solid #1c1a1a; max-width: 800px; margin: 0 auto;">
-                <div id="reportrange" style=" cursor: pointer; padding: 5px 10px;  width: 40%">
-                    <i class="fa fa-calendar"></i>&nbsp;
-                    <span></span> <i class="fa fa-caret-down"></i>
-                </div>
-                <div>
-                    <button class="btn btn-primary mr-2" onclick="display()"><i class="fa fa-print"></i> Print</button>
-                    <button class="btn btn-success"><i class="fa fa-download"></i> Export</button>
+    <div class="container main-content">
+        <div class="row fixed-top" style="padding-top: 5rem;">
+            <div class="col-md-12">
+                <div
+                    style="display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; max-width: 800px; margin: 0 auto;">
+                    <div id="reportrange"
+                        style="cursor: pointer; padding: 5px 10px; width: 40%; display: flex; align-items: center;">
+                        <i class="fa fa-calendar"></i>&nbsp;
+                        <span></span> <i class="fa fa-caret-down"></i>
+                    </div>
+                    <div>
+                        <a href="#" style="margin-left: 10px;">Customize report <i class="fa fa-cog"></i></a>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary mr-2" onclick="display()"><i class="fa fa-print"></i>
+                            Print</button>
+                        <button class="btn btn-success" id="exportButton"><i class="fa fa-download"></i> Export</button>
+                        <button class="btn btn-block"  id="closeButton">
+                            <i class="fa fa-times"></i> 
+                        </button>
+                    </div>
+                   
                 </div>
             </div>
-        </div>
-        <div class="col-md-12 ">
-            <div style="height: 640px; overflow-y: scroll;">
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <h3 style="font-size: x-large;">Zoho</h3>
-                        <h4 style="font-size: x-large;">Sales by Customer</h4>
-                        <p id="dateRange">From 21 Jan 2023 to 21 Jan 2024</p>
-                        <!-- The input field for the date range picker -->
-                        <input type="text" id="dateRangePicker" class="form-control" style="display: none;">
+            <div class="col-md-12">
+                <div style="height: 700px; overflow-y: scroll;">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <div class="printable-content">
+                                <h3 style="font-size: x-large;">Zoho</h3>
+                                <h4 style="font-size: x-large;">Sales by Customer</h4>
+                                <p id="dateRange">From 21 Jan 2023 to 21 Jan 2024</p>
+                                <!-- The input field for the date range picker -->
+                                <input type="text" id="dateRangePicker" class="form-control" style="display: none;">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 </section>
 
+<div class="container table-container">
+    <div class="row">
+        <div class="col-md-12" id="salesTable">
+            <div class="printable-content">
+                <div class="table-responsive"> <!-- Add a responsive container around the table -->
+                    <table class="table table-bordered">
 
-
-<div class="row table-header-placeholder" style="padding: 200px; width: max-content;"></div>
-
-<div class="col-md-12">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Invoice Count</th>
-                    <th>Sales</th>
-                    <th>Sales with Tax</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Replace the following with actual data from your backend -->
-                <tr>
-                    <td>Customer 1</td>
-                    <td>10</td>
-                    <td>$1000</td>
-                    <td>$1200</td>
-                </tr>
-                <tr>
-                    <td>Customer 2</td>
-                    <td>15</td>
-                    <td>$1500</td>
-                    <td>$1800</td>
-                </tr>
-                <!-- Add more rows as needed -->
-            </tbody>
-        </table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Invoice Count</th>
+                                <th>Sales</th>
+                                <th>Sales with Tax</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in cust %}
+                            <tr>
+                                <td>{{ i.customerName }}</td>
+                                <td></td> <!-- Add a placeholder column -->
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 
 
 <script type="text/javascript">
-$(function() {
+    
 
-    var start = moment().subtract(29, 'days');
-    var end = moment();
+    document.getElementById("closeButton").addEventListener("click", function () {
+        // Navigate back to reports.html
+        window.location.href = "{% url 'reports' %}";
+    });
 
-    function cb(start, end) {
-        $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-    }
 
-    $('#reportrange').daterangepicker({
-        startDate: start,
-        endDate: end,
-        ranges: {
-           'Today': [moment(), moment()],
-           'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-           'This Month': [moment().startOf('month'), moment().endOf('month')],
-           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    $(document).ready(function () {
+        var table = $('#salesTable').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+
+        });
+    });
+
+    $(function () {
+        var start = moment().subtract(29, 'days');
+        var end = moment();
+
+        function cb(start, end) {
+            $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
         }
-    }, cb);
 
-    cb(start, end);
+        $('#reportrange').daterangepicker({
+            startDate: start,
+            endDate: end,
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            }
+        }, cb);
 
-  
+        cb(start, end);
+    });
 
-
-
-
-});
-
-
-function display() {
-         window.print();
-      }
-
+    function display() {
+        window.print();
+    }
 </script>
 
 {% endblock %}
