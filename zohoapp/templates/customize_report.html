@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .custom-container {
+        background-color: black;
+        color: white;
+    }
+
+    .custom-list-group .custom-list-item {
+       
+        color: white;
+        border: none;
+        margin-bottom: 10px;
+        cursor: pointer; /* Add cursor style for links */
+    }
+
+    .custom-list-group .list-group-item.active {
+        background-color: #343a40;
+    }
+
+    .custom-content {
+        padding: 20px;
+    }
+
+    /* Custom styles for left column */
+    .left-column {
+        background-color: rgba(black);
+        color: white;
+        padding: 20px;
+        height: 50vh;
+        overflow-y: auto; /* Add scroll if needed */
+        width: 250px; /* Set the width of the left column */
+    }
+
+    /* Custom styles for right column */
+    .right-column {
+        padding: 20px;
+        flex: 1; /* Take the remaining width */
+    }
+
+    /* Flexbox layout for row */
+    .row-container {
+        display: flex;
+    }
+
+    #dateRangePicker {
+        background-color: white;
+        border: 1px solid #ccc;
+        padding: 10px;
+        width: 100%;
+        font-size: 14px;
+        color: black; /* Set the text color to black */
+    }
+    #reportrange .fa-caret-down {
+        color: rgb(11, 11, 11);
+    }
+
+    .daterangepicker .ranges li {
+        color: black;
+    }
+
+    .active-link {
+        color: #0b07ff; /* Change to the desired active link color */
+    }
+</style>
+
+<div class="container main-content">
+    <div class="row row-container">
+        <div class="col-md-3 left-column">
+            <div class="custom-list-group">
+                <a class="custom-list-item" data-target="general">
+                    General
+                </a>
+                <br>
+                <br>
+                <br>
+                <a class="custom-list-item" data-target="columns">Show/Hide Columns</a>
+            </div>
+        </div>
+        <div class="col-md-9 right-column">
+            <div id="general" class="custom-content">
+                <h2>General </h2>
+                <div>
+                    <label for="dateRangePicker">Select Date Range:</label>
+                    <input type="text" id="dateRangePicker" class="form-control">
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="checkbox1">
+                    <label class="form-check-label" for="checkbox1">
+                        Include 'Sale without invoices' and 'sales return'
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="checkbox2">
+                    <label class="form-check-label" for="checkbox2">
+                        Include 'manual journals'
+                    </label>
+                </div>
+            </div>
+            <div id="columns" class="custom-content" style="display: none;">
+                <!-- Columns content here -->
+                <h2>Columns Content</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+        const links = document.querySelectorAll(".custom-list-item");
+        const contents = document.querySelectorAll(".custom-content");
+
+        links.forEach((link, index) => {
+            link.addEventListener("click", () => {
+                contents.forEach(content => {
+                    content.style.display = "none";
+                });
+                const targetId = link.getAttribute("data-target");
+                const targetContent = document.getElementById(targetId);
+                targetContent.style.display = "block";
+            });
+        });
+
+        // Initialize date range picker
+        $('#dateRangePicker').daterangepicker({
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+            }
+        }, function(start, end, label) {
+            // Callback function when a date range is selected
+            console.log('A date range was chosen: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+        });
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+    // JavaScript code to handle showing and hiding content
+    document.addEventListener("DOMContentLoaded", function () {
+        const links = document.querySelectorAll(".custom-list-item");
+        const contents = document.querySelectorAll(".custom-content");
+
+        links.forEach((link, index) => {
+            link.addEventListener("click", () => {
+                // Reset the color of all links
+                links.forEach(link => {
+                    link.classList.remove("active-link");
+                });
+
+                // Add the active class to the clicked link
+                link.classList.add("active-link");
+
+                contents.forEach(content => {
+                    content.style.display = "none";
+                });
+
+                const targetId = link.getAttribute("data-target");
+                const targetContent = document.getElementById(targetId);
+                targetContent.style.display = "block";
+            });
+        });
+    });
+</script>
+
+{% endblock %}

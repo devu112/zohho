@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container main-content">
+    <div class="row">
+        <div class="col-md-6">
+            <h4>General Customization</h4>
+            <div>
+                <label for="dateRangePicker">Select Date Range:</label>
+                <input type="text" id="dateRangePicker" class="form-control">
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="checkbox1">
+                <label class="form-check-label" for="checkbox1">
+                   Include 'Sale without invoices' and 'sales return'
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="checkbox2">
+                <label class="form-check-label" for="checkbox2">
+                    Include 'manual journals'
+                </label>
+            </div>
+            <button class="btn btn-primary mt-3">Apply Changes</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
