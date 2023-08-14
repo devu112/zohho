@@ -160,6 +160,7 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
+                               
                                 <th>Item Name</th>
                                 <th>Quantity Sold</th>
                                 <th>Amount</th>
@@ -169,10 +170,12 @@
                         <tbody>
                             <!-- Replace this with your actual data -->
                             <tr>
-                                <td>Item 1</td>
-                                <td>100</td>
-                                <td>$1000</td>
-                                <td>$10</td>
+                            {% for c in items %}
+                                <td>{{c.Name}}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            {% endfor %}
                             </tr>
                             <!-- Add more rows as needed -->
                         </tbody>

@@ -3,6 +3,49 @@
 {% block content %}
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
+    /* Global styles */
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    /* Main content styles */
+    .main-content {
+        padding: 30px;
+        text-align: center;
+    }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .header-buttons {
+        display: flex;
+        align-items: center;
+    }
+
+    .header-buttons a, .header-buttons button {
+        margin-right: 10px;
+    }
+
+    /* Date range styles */
+    #reportrange {
+        cursor: pointer;
+        margin-bottom: 10px;
+        color: rgb(247, 229, 229);
+    }
+    #dateRangePicker {
+        background-color: white;
+        border: 1px solid #ccc;
+        padding: 10px;
+        width: 100%;
+        font-size: 14px;
+        color: rgb(3, 3, 3); /* Set the text color to black */
+    }
+    #reportrange .fa-caret-down {
+        color: rgb(14, 13, 13);
+    }
     #reportrange .fa-caret-down {
         color: rgb(11, 11, 11);
     }
@@ -11,184 +54,102 @@
         color: black;
     }
 
-    .table-fixed thead {
-        position: sticky;
-        top: 5rem;
-        /* Adjust this value to match your design */
-        background-color: #f8f9fa;
-        /* Add a background color for the sticky header */
-    }
-
+    
+    /* Table styles */
     .table-container {
-        margin-top: 200px;
-        /* Add margin to push the table below the content */
+        margin-top: 30px;
     }
 
-    .main-content {
-        padding: 15px;
-        /* Add padding for content */
+    .printable-content table {
+        width: 100%;
+        border-collapse: collapse;
     }
 
-    @media (max-width: 768px) {
-        .fixed-top {
-            padding-left: 15px;
-            /* Adjust padding for fixed-top */
-        }
-
-        .printable-content {
-            padding: 15px;
-            /* Add padding for printable content */
-        }
-
-        .table-header-placeholder {
-            padding: 100px 0;
-            /* Adjust padding for header placeholder */
-        }
-
-        #salesTable {
-            padding: 15px;
-            /* Add padding for sales table */
-        }
+    .printable-content th,
+    .printable-content td {
+        border: 1px solid #000;
+        padding: 12px;
+        font-size: 16px;
+        text-align: center;
     }
+    
 
+    /* Printable view */
     @media print {
-
-        /* Hide non-essential elements */
         body * {
             visibility: hidden;
         }
 
-        /* Show only the printable content */
         .printable-content,
         .printable-content * {
             visibility: visible;
         }
-
-        /* Style the table for the print view */
-        .printable-content table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .printable-content th,
-        .printable-content td {
-            border: 1px solid #000;
-            padding: 8px;
-        }
-
-        /* Adjust font sizes for better readability */
-        .printable-content h3 {
-            font-size: 18px;
-        }
-
-        .printable-content h4 {
-            font-size: 16px;
-        }
-
-        .printable-content p {
-            font-size: 14px;
-            margin: 10px 0;
-        }
     }
-
-    
+    #closeButton {
+        margin-left: auto;
+        margin-right: 20px;
+    }
 </style>
 
-<section>
-    <div class="container main-content">
-        <div class="row fixed-top" style="padding-top: 5rem;">
-            <div class="col-md-12">
-                <div
-                    style="display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; max-width: 800px; margin: 0 auto;">
-                    <div id="reportrange"
-                        style="cursor: pointer; padding: 5px 10px; width: 40%; display: flex; align-items: center;">
-                        <i class="fa fa-calendar"></i>&nbsp;
-                        <span></span> <i class="fa fa-caret-down"></i>
-                    </div>
-                    <div>
-                        <a href="{% url 'customize_report' %}" style="margin-left: 10px;">Customize report <i class="fa fa-cog"></i></a>
-                    </div>
-                    <div>
-                        <button class="btn btn-primary mr-2" onclick="display()"><i class="fa fa-print"></i>
-                            Print</button>
-                        <button class="btn btn-success" id="exportButton"><i class="fa fa-download"></i> Export</button>
-                        <button class="btn btn-block"  id="closeButton">
-                            <i class="fa fa-times"></i> 
-                        </button>
-                    </div>
-                   
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div style="height: 700px; overflow-y: scroll;">
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            <div class="printable-content">
-                                <h3 style="font-size: x-large;">Zoho</h3>
-                                <h4 style="font-size: x-large;">Sales by Customer</h4>
-                                <p id="dateRange">From 21 Jan 2023 to 21 Jan 2024</p>
-                                <!-- The input field for the date range picker -->
-                                <input type="text" id="dateRangePicker" class="form-control" style="display: none;">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="container main-content">
+    <div class="header">
+        <div id="reportrange">
+            <i class="fa fa-calendar"></i>&nbsp;
+            <span></span> <i class="fa fa-caret-down"></i>
         </div>
-</section>
+        <div class="header-buttons">
+            <a href="{% url 'customize_report' %}" ><i class="fa fa-cog"></i> Customize Report</a>
+            <button class="btn btn-primary" onclick="display()"><i class="fa fa-print"></i> Print</button>
+            <button class="btn btn-success" id="exportButton"><i class="fa fa-download"></i> Export</button>
+            <button class="btn btn-danger" id="closeButton" ><i class="fa fa-times"></i></button>
+        </div>
+    </div>
 
-<div class="container table-container">
-    <div class="row">
-        <div class="col-md-12" id="salesTable">
-            <div class="printable-content">
-                <div class="table-responsive"> <!-- Add a responsive container around the table -->
-                    <table class="table table-bordered">
+    <div class="printable-content">
+        <h2>Zoho</h2>
+        <h3>Sales by Customer</h3>
+        <h4>Date Range: From 21 Jan 2023 to 21 Jan 2024</h4>
+    </div>
 
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Invoice Count</th>
-                                <th>Sales</th>
-                                <th>Sales with Tax</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for i in cust %}
-                            <tr>
-                                <td>{{ i.customerName }}</td>
-                                <td></td> <!-- Add a placeholder column -->
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+    <div class="table-container">
+        <div class="printable-content">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Invoice Count</th>
+                        <th>Sales</th>
+                        <th>Sales with Tax</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in cust %}
+                    <tr>
+                        <td>{{ i.customerName }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 
-
-
 <script type="text/javascript">
-    
-
     document.getElementById("closeButton").addEventListener("click", function () {
-        // Navigate back to reports.html
         window.location.href = "{% url 'reports' %}";
     });
 
-
     $(document).ready(function () {
-        var table = $('#salesTable').DataTable({
-            dom: 'Bfrtip',
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf'
-            ],
-
-        });
+    var table = $('.table').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf'
+        ],
     });
+});
 
     $(function () {
         var start = moment().subtract(29, 'days');

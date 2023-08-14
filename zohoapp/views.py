@@ -7023,7 +7023,5 @@ def general_customize(request):
     return render(request,'general_customize.html')    
 
 def salesby_item(request):
-    customer1 = customer.objects.all()
-    for c in customer1:
-        print(c.customerName)  # This will print the customer names in the console
-    return render(request, 'salesby_item.html', {'cust': customer1})
+    items = AddItem.objects.all()
+    return render(request, 'salesby_item.html', {'items': items})
