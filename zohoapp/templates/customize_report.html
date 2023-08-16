@@ -8,7 +8,6 @@
     }
 
     .custom-list-group .custom-list-item {
-
         color: white;
         border: none;
         margin-bottom: 10px;
@@ -70,6 +69,25 @@
         color: #0b07ff;
         /* Change to the desired active link color */
     }
+
+    /* Additional styles for show/hide columns */
+    .item-list {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    .add,
+    .remove {
+        cursor: pointer;
+        margin-left: 5px;
+    }
+
+    .highlight {
+        background-color: #f0f0f0;
+    }
+
+   
 </style>
 
 <div class="container main-content">
@@ -82,7 +100,9 @@
                 <br>
                 <br>
                 <br>
-                <a class="custom-list-item" data-target="columns">Show/Hide Columns</a>
+                <a class="custom-list-item" data-target="columns">
+                    Show/Hide Columns
+                </a>
             </div>
         </div>
         <div class="col-md-9 right-column">
@@ -105,73 +125,45 @@
                     </label>
                 </div>
             </div>
-            <div class="custom-content" style="display: none;" id="columns">
-                <h2 style="color: aliceblue;">Available columns</h2>
-                <div class="search-dropdown">
-                    <div class="search-container">
-                        <input type="text" id="searchInput" placeholder="Search">
-                        <span id="searchIcon" class="fa fa-search"></span>
+            <div id="columns" class="custom-content" style="display: none;">
+                <!-- Show/Hide Columns section -->
+                <div class="row">
+                    <div class="col-md-6" id="originalColumn" style="height: 70vh; width:25vw; overflow-y:auto; border: 1px solid #ccc; position: relative; padding-right: 15px;">
+                        <h2 style="color: white; position: sticky; top: 0;">Available Column</h2>
+                        <div class="search-bar" style="position: sticky; top: 40px;">
+                            <input type="text" id="searchInput" class="search-input" placeholder="Search items">
+                            <span class="search-icon">&#128269;</span>
+                        </div>
+                        <ul class="item-list">
+                            <li class="items"><span class="item-text">Item type</span> <span class="add">+</span></li>
+                            <li class="items"><span class="item-text">Product type</span> <span class="add">+</span></li>
+                            <li class="items"><span class="item-text">Status</span> <span class="add">+</span></li>
+                            <li class="items"><span class="item-text">Usage Unit</span> <span class="add">+</span></li>
+                            <li class="items"><span class="item-text">Sales Description</span> <span class="add">+</span></li>
+                            <li class="items"><span class="item-text">Sales price</span> <span class="add">+</span></li>
+                        </ul>
                     </div>
-                    <div class="dropdown-menu" id="dropdownMenu">
-                        <h3>Reports</h3>
-                        <ul>
-                           <li>Sales</li>
-                           <li>Sales with Tac(FCY)</li>
-                        </ul>
-                        <h3>Contacts</h3>
-                        <ul>
-                            <li>Company name</li>
-                            <li>Firstname</li>
-
-                            <li>Lastname</li>
-                            <li>Website</li>
-                            <li>Customer Email</li>
-                            <li>MobileNO</li>
-                        </ul>
+                    <div class="col-md-6" id="addedColumn" style="height: auto; max-height:70vh; width:25vw; overflow-y:auto ;border: 1px solid #ccc; padding-left: 15px;">
+                        <h2 style="color: white; position: sticky; top:0;">Selected Column</h2>
+                        <ul class="item-list"></ul>
                     </div>
                 </div>
-            </div>
-            <div class="selected-content" style="display: none;" id="selectedColumns">
-                <h2>Selected columns</h2>
-                <ul id="selectedItems">
-                   
-                </ul>
+                <!-- End Show/Hide Columns section -->
             </div>
         </div>
     </div>
-                </div>
-            </div>
-            
-           
+</div>
 
 <script>
-     document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
         const links = document.querySelectorAll(".custom-list-item");
         const contents = document.querySelectorAll(".custom-content");
-        const plusButtons = document.querySelectorAll(".add");
-        const selectedItemsList = document.getElementById("selectedItems");
+        const availableItems = document.querySelectorAll("#originalColumn .items");
+        const addButtons = document.querySelectorAll("#originalColumn .add");
+        const selectedItems = document.querySelector("#addedColumn .item-list");
+        const searchInput = document.getElementById("searchInput");
+        const searchIcon = document.querySelector(".search-icon");
 
-        plusButtons.forEach(button => {
-            button.addEventListener("click", () => {
-                const selectedItem = button.parentElement.innerText.trim();
-                const li = document.createElement("li");
-                li.textContent = selectedItem;
-
-                const minusButton = document.createElement("span");
-                minusButton.classList.add("minus-btn");
-                minusButton.textContent = "-";
-                li.appendChild(minusButton);
-
-                selectedItemsList.appendChild(li);
-            });
-        });
-
-        selectedItemsList.addEventListener("click", event => {
-            if (event.target.classList.contains("minus-btn")) {
-                const selectedItem = event.target.parentElement;
-                selectedItem.remove();
-            }
-        });
 
         links.forEach((link, index) => {
             link.addEventListener("click", () => {
@@ -187,6 +179,7 @@
                 targetContent.style.display = "block";
             });
         });
+
         // Initialize date range picker
         $('#dateRangePicker').daterangepicker({
             ranges: {
@@ -201,39 +194,46 @@
             // Callback function when a date range is selected
             console.log('A date range was chosen: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
         });
-    });
 
+        // JavaScript code for show/hide columns (same as before)
+       
 
-// JavaScript code to handle showing and hiding content
-    document.addEventListener("DOMContentLoaded", function () {
-        const links = document.querySelectorAll(".custom-list-item");
-        const contents = document.querySelectorAll(".custom-content");
+        addButtons.forEach((button, index) => {
+            button.addEventListener("click", () => {
+                const itemText = availableItems[index].querySelector(".item-text").textContent;
+                const listItem = document.createElement("li");
+                listItem.className = "items";
+                listItem.innerHTML = `<span class="item-text">${itemText}</span> <span class="remove">-</span>`;
+                selectedItems.appendChild(listItem);
+                availableItems[index].style.display = "none";
 
-        links.forEach((link, index) => {
-            link.addEventListener("click", () => {
-                // Reset the color of all links
-                links.forEach(link => {
-                    link.classList.remove("active-link");
+                const removeButton = listItem.querySelector(".remove");
+                removeButton.addEventListener("click", () => {
+                    selectedItems.removeChild(listItem);
+                    availableItems[index].style.display = "flex";
                 });
+            });
+        });
 
-                // Add the active class to the clicked link
-                link.classList.add("active-link");
-
-                contents.forEach(content => {
-                    content.style.display = "none";
-                });
-
-                const targetId = link.getAttribute("data-target");
-                const targetContent = document.getElementById(targetId);
-                targetContent.style.display = "block";
+        searchIcon.addEventListener("click", () => {
+            const searchTerm = searchInput.value.toLowerCase();
+            availableItems.forEach(item => {
+                const itemText = item.querySelector(".item-text").textContent.toLowerCase();
+                if (itemText.includes(searchTerm)) {
+                    item.style.display = "flex";
+                    if (searchTerm !== "") {
+                        item.classList.add("highlight");
+                    } else {
+                        item.classList.remove("highlight");
+                    }
+                } else {
+                    item.style.display = "none";
+                    item.classList.remove("highlight");
+                }
             });
         });
     });
-
-
-   
     
-
 </script>
 
 {% endblock %}

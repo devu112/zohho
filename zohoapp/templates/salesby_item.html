@@ -1,218 +1,85 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block content %}
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
-      #reportrange .fa-caret-down {
-        color: rgb(11, 11, 11);
-    }
-
-    .daterangepicker .ranges li {
-        color: black;
-    }
-
-    .table-fixed thead {
-        position: sticky;
-        top: 5rem;
-        /* Adjust this value to match your design */
-        background-color: #f8f9fa;
-        /* Add a background color for the sticky header */
-    }
-
-    .main-content {
-        padding: 15px;
-        /* Add padding for content */
-    }
-
-    @media (max-width: 768px) {
-        .fixed-top {
-            padding-left: 15px;
-            /* Adjust padding for fixed-top */
+     @media print {
+            body * {
+                display: none;
+            }
+            
+            h1, h2, h3, h4, table {
+                display: block !important;
+            }
         }
-
-        .printable-content {
-            padding: 15px;
-            /* Add padding for printable content */
-        }
-
-        .table-header-placeholder {
-            padding: 100px 0;
-            /* Adjust padding for header placeholder */
-        }
-    }
-    @media print {
-
-        /* Hide non-essential elements */
-        body * {
-            visibility: hidden;
-        }
-
-        /* Show only the printable content */
-        .printable-content,
-        .printable-content * {
-            visibility: visible;
-        }
-
-        /* Style the table for the print view */
-        .printable-content table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .printable-content th,
-        .printable-content td {
-            border: 1px solid #000;
-            padding: 8px;
-        }
-
-        /* Adjust font sizes for better readability */
-        .printable-content h3 {
-            font-size: 18px;
-        }
-
-        .printable-content h4 {
-            font-size: 16px;
-        }
-
-        .printable-content p {
-            font-size: 14px;
-            margin: 10px 0;
-        }
-    }
-    #salesTable {
-        margin-top: 20px;
-    }
-    .custom-container {
-        background-color: #343a40;
-        color: white;
-        padding: 15px;
-    }
-
-    .custom-list-group .list-group-item {
-        background-color: #343a40;
-        color: white;
-        border: none;
-    }
-
-    .custom-list-group .list-group-item.active {
-        background-color: #343a40;
-    }
-
-    .custom-content {
-        padding: 20px;
-    }
-
-    .section-spacing {
-        margin-top: 20px;
-    }
-    
 </style>
 
-
-<section>
-    <div class="container main-content">
-        <div class="row fixed-top" style="padding-top: 5rem;">
-            <div class="col-md-12">
-                <div
-                    style="display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; max-width: 800px; margin: 0 auto;">
-                    <div id="reportrange"
-                        style="cursor: pointer; padding: 5px 10px; width: 40%; display: flex; align-items: center;">
-                        <i class="fa fa-calendar"></i>&nbsp;
-                        <span></span> <i class="fa fa-caret-down"></i>
-                    </div>
-                    <div>
-                        <a href="{% url 'customize_report' %}" style="margin-left: 10px;">Customize report <i class="fa fa-cog"></i></a>
-                    </div>
-                    <div>
-                        <button class="btn btn-primary mr-2" onclick="display()"><i class="fa fa-print"></i>
-                            Print</button>
-                        <button class="btn btn-success" id="exportButton"><i class="fa fa-download"></i> Export</button>
-                        <button class="btn btn-block"  id="closeButton" style="margin-left: 20px;">
-                            <i class="fa fa-times"></i> 
-                        </button>
-                    </div>
-                </div>
+    <div class="d-flex justify-content-between align-items-center" >
+        <div class="d-flex">
+            <div class="mr-3">
+                <!-- Date range calendar input -->
+                
+                <div id="reportrange"
+                style="cursor: pointer; padding: 5px 10px; width: 70%; display: flex; align-items: center; color: #f8f9fa; ">
+                <i class="fa fa-calendar"></i>&nbsp;
+                <span></span> <i class="fa fa-caret-down"></i>
             </div>
-            <div class="col-md-12">
-                <div style="height: 700px; overflow-y: scroll;">
-                    <div class="row">
-                        <div class="col-12 text-center">
-                            <div class="printable-content">
-                                <h3 style="font-size: x-large;">Zoho</h3>
-                                <h4 style="font-size: x-large;">Sales by Item</h4>
-                                <p id="dateRange">From 21 Jan 2023 to 21 Jan 2024</p>
-                                <!-- The input field for the date range picker -->
-                                <input type="text" id="dateRangePicker" class="form-control" style="display: none;">
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
+            <a href="{% url 'customize_report' %}" style="margin-left: 10px;">Customize report <i class="fa fa-cog"></i></a>
         </div>
-</section>
-
-<div class="container section-spacing" style="margin: 200px;">
-    <div class="row">
-        <div class="col-md-12" id="salesTable" >
-            <div class="printable-content">
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                               
-                                <th>Item Name</th>
-                                <th>Quantity Sold</th>
-                                <th>Amount</th>
-                                <th>Average Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Replace this with your actual data -->
-                            <tr>
-                            {% for c in items %}
-                                <td>{{c.Name}}</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            {% endfor %}
-                            </tr>
-                            <!-- Add more rows as needed -->
-                        </tbody>
-                    </table>
+        <div class="d-flex">
+            <!-- Print button -->
+            <button class="btn btn-light mr-2" onclick="display()">Print</button>
+            <!-- Export dropdown -->
+            <div class="dropdown">
+                <button class="btn btn-light dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Export
+                </button>
+                <div class="dropdown-menu" aria-labelledby="exportDropdown">
+                    <a class="dropdown-item" href="#">PDF</a>
+                    <a class="dropdown-item" href="#">Excel</a>
                 </div>
+                <a href="{% url 'reports' %}" class="btn btn-light ml-2">
+                    <i class="fa fa-times-circle"></i> 
+                </a>
             </div>
         </div>
     </div>
-</div>
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/daterangepicker@3.0.5/daterangepicker.min.js"></script>
 
-<script type="text/javascript">
-    
+    <h1 class="text-center mt-4" style="color: aliceblue;">Zoho</h1>
+    <h4 class="text-center mt-4" style="color: aliceblue;">Sales by Customer</h2>
+    <h5 class="text-center" style="color: aliceblue;">Basis: Accrual</h3>
+    <p class="text-center" style="color: aliceblue;">From 21 Jan 2023 To 21 Jan 2024</h4>
 
-    document.getElementById("closeButton").addEventListener("click", function () {
-        // Navigate back to reports.html
-        window.location.href = "{% url 'reports' %}";
-    });
+    <table class="table table-bordered table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Item Name</th>
+                <th>Quantity sold</th>
+                <th>Amount</th>
+                <th>Average price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Add your table rows with data here -->
+            <!-- Replace this with actual data -->
+            <tr>
+            {% for c in items %}
+            <td style="color: #ccc;">{{ c.Name }}</td>
+                <td>10</td>
+                <td>$1000</td>
+                <td>$1200</td>
+            {% endfor %}
+            </tr>
+            
+        </tbody>
+    </table>
+    <div class="text-center mt-3">
+        <p style="color: aqua;">Amount is displayed in your base currency: INR</p>
+    </div>
 
-
-    $(document).ready(function () {
-        var table = $('#salesTable').DataTable({
-            dom: 'Bfrtip',
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf'
-            ],
-
-        });
-    });
-
-    $(function () {
+    <script>
+         $(function () {
         var start = moment().subtract(29, 'days');
         var end = moment();
 
@@ -236,9 +103,12 @@
         cb(start, end);
     });
 
+    
     function display() {
         window.print();
     }
-</script>
 
+
+
+    </script>
 {% endblock %}

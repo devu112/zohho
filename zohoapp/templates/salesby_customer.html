@@ -1,157 +1,85 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block content %}
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-    /* Global styles */
-    body {
-        font-family: Arial, sans-serif;
-    }
-
-    /* Main content styles */
-    .main-content {
-        padding: 30px;
-        text-align: center;
-    }
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-
-    .header-buttons {
-        display: flex;
-        align-items: center;
-    }
-
-    .header-buttons a, .header-buttons button {
-        margin-right: 10px;
-    }
-
-    /* Date range styles */
-    #reportrange {
-        cursor: pointer;
-        margin-bottom: 10px;
-        color: rgb(247, 229, 229);
-    }
-    #dateRangePicker {
-        background-color: white;
-        border: 1px solid #ccc;
-        padding: 10px;
-        width: 100%;
-        font-size: 14px;
-        color: rgb(3, 3, 3); /* Set the text color to black */
-    }
-    #reportrange .fa-caret-down {
-        color: rgb(14, 13, 13);
-    }
-    #reportrange .fa-caret-down {
-        color: rgb(11, 11, 11);
-    }
-
-    .daterangepicker .ranges li {
-        color: black;
-    }
-
-    
-    /* Table styles */
-    .table-container {
-        margin-top: 30px;
-    }
-
-    .printable-content table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .printable-content th,
-    .printable-content td {
-        border: 1px solid #000;
-        padding: 12px;
-        font-size: 16px;
-        text-align: center;
-    }
-    
-
-    /* Printable view */
-    @media print {
-        body * {
-            visibility: hidden;
+     @media print {
+            body * {
+                display: none;
+            }
+            
+            h1, h2, h3, h4, table {
+                display: block !important;
+            }
         }
-
-        .printable-content,
-        .printable-content * {
-            visibility: visible;
-        }
-    }
-    #closeButton {
-        margin-left: auto;
-        margin-right: 20px;
-    }
 </style>
 
-<div class="container main-content">
-    <div class="header">
-        <div id="reportrange">
-            <i class="fa fa-calendar"></i>&nbsp;
-            <span></span> <i class="fa fa-caret-down"></i>
+    <div class="d-flex justify-content-between align-items-center" >
+        <div class="d-flex">
+            <div class="mr-3">
+                <!-- Date range calendar input -->
+                
+                <div id="reportrange"
+                style="cursor: pointer; padding: 5px 10px; width: 70%; display: flex; align-items: center; color: #f8f9fa; ">
+                <i class="fa fa-calendar"></i>&nbsp;
+                <span></span> <i class="fa fa-caret-down"></i>
+            </div>
+            </div>
+            <a href="{% url 'customize_report' %}" style="margin-left: 10px;">Customize report <i class="fa fa-cog"></i></a>
         </div>
-        <div class="header-buttons">
-            <a href="{% url 'customize_report' %}" ><i class="fa fa-cog"></i> Customize Report</a>
-            <button class="btn btn-primary" onclick="display()"><i class="fa fa-print"></i> Print</button>
-            <button class="btn btn-success" id="exportButton"><i class="fa fa-download"></i> Export</button>
-            <button class="btn btn-danger" id="closeButton" ><i class="fa fa-times"></i></button>
-        </div>
-    </div>
-
-    <div class="printable-content">
-        <h2>Zoho</h2>
-        <h3>Sales by Customer</h3>
-        <h4>Date Range: From 21 Jan 2023 to 21 Jan 2024</h4>
-    </div>
-
-    <div class="table-container">
-        <div class="printable-content">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Invoice Count</th>
-                        <th>Sales</th>
-                        <th>Sales with Tax</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for i in cust %}
-                    <tr>
-                        <td>{{ i.customerName }}</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="d-flex">
+            <!-- Print button -->
+            <button class="btn btn-light mr-2" onclick="display()">Print</button>
+            <!-- Export dropdown -->
+            <div class="dropdown">
+                <button class="btn btn-light dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Export
+                </button>
+                <div class="dropdown-menu" aria-labelledby="exportDropdown">
+                    <a class="dropdown-item" href="#">PDF</a>
+                    <a class="dropdown-item" href="#">Excel</a>
+                </div>
+                <a href="{% url 'reports' %}" class="btn btn-light ml-2">
+                    <i class="fa fa-times-circle"></i> 
+                </a>
+            </div>
         </div>
     </div>
-</div>
 
-<script type="text/javascript">
-    document.getElementById("closeButton").addEventListener("click", function () {
-        window.location.href = "{% url 'reports' %}";
-    });
+    <h2 class="text-center mt-4" style="color: aliceblue;">Zoho</h1>
+    <h4 class="text-center mt-4" style="color: aliceblue;">Sales by Customer</h2>
+    <h5 class="text-center" style="color: aliceblue;">Basis: Accrual</h3>
+    <p class="text-center" style="color: aliceblue;">From 21 Jan 2023 To 21 Jan 2024</h4>
 
-    $(document).ready(function () {
-    var table = $('.table').DataTable({
-        dom: 'Bfrtip',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf'
-        ],
-    });
-});
+    <table class="table table-bordered table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Invoice Count</th>
+                <th>Sales</th>
+                <th>Sales with Tax</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Add your table rows with data here -->
+            <!-- Replace this with actual data -->
+            <tr>
+            {% for i in cust %}
+            <td style="color: #ccc;">{{ i.customerName }}</td>
+                <td>10</td>
+                <td>$1000</td>
+                <td>$1200</td>
+            {% endfor %}
+            </tr>
+            
+        </tbody>
+    </table>
+    <div class="text-center mt-3">
+        <p style="color: aqua;">Amount is displayed in your base currency: INR</p>
+    </div>
 
-    $(function () {
+    <script>
+         $(function () {
         var start = moment().subtract(29, 'days');
         var end = moment();
 
@@ -175,9 +103,12 @@
         cb(start, end);
     });
 
+    
     function display() {
         window.print();
     }
-</script>
 
+
+
+    </script>
 {% endblock %}
