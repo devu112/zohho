@@ -7027,4 +7027,8 @@ def salesby_item(request):
     items = AddItem.objects.all()
     return render(request, 'salesby_item.html', {'items': items})
 
+def customize_report1(request):
+    return render(request, 'customize_report1.html')
+
+
 

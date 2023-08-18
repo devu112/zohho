@@ -3,15 +3,27 @@
 
 {% block content %}
 <style>
-     @media print {
-            body * {
-                display: none;
-            }
-            
-            h1, h2, h3, h4, table {
-                display: block !important;
-            }
+    @media print {
+        body * {
+            visibility: hidden;
         }
+        .printable-content, .printable-content * {
+            visibility: visible;
+        }
+        .printable-content {
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        .printable-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+    }
 </style>
 
     <div class="d-flex justify-content-between align-items-center" >
@@ -25,7 +37,7 @@
                 <span></span> <i class="fa fa-caret-down"></i>
             </div>
             </div>
-            <a href="{% url 'customize_report' %}" style="margin-left: 10px;">Customize report <i class="fa fa-cog"></i></a>
+            <a href="{% url 'customize_report1' %}" style="margin-left: 10px;">Customize report <i class="fa fa-cog"></i></a>
         </div>
         <div class="d-flex">
             <!-- Print button -->
@@ -36,8 +48,8 @@
                     Export
                 </button>
                 <div class="dropdown-menu" aria-labelledby="exportDropdown">
-                    <a class="dropdown-item" href="#">PDF</a>
-                    <a class="dropdown-item" href="#">Excel</a>
+                    <a class="dropdown-item" href="#" onclick="exportToPDF()">PDF</a>
+                    <a class="dropdown-item" href="#" onclick="exportToExcel()">XLS (Excel)</a>
                 </div>
                 <a href="{% url 'reports' %}" class="btn btn-light ml-2">
                     <i class="fa fa-times-circle"></i> 
@@ -45,11 +57,12 @@
             </div>
         </div>
     </div>
-
+    <div class="printable-wrapper">
+         <div class="printable-content">
     <h1 class="text-center mt-4" style="color: aliceblue;">Zoho</h1>
-    <h4 class="text-center mt-4" style="color: aliceblue;">Sales by Customer</h2>
-    <h5 class="text-center" style="color: aliceblue;">Basis: Accrual</h3>
-    <p class="text-center" style="color: aliceblue;">From 21 Jan 2023 To 21 Jan 2024</h4>
+    <h4 class="text-center mt-4" style="color: aliceblue;">Sales by Item</h4>
+    <h5 class="text-center" style="color: aliceblue;">Basis: Accrual</h5>
+    <p class="text-center" style="color: aliceblue;">From 21 Jan 2023 To 21 Jan 2024</p>
 
     <table class="table table-bordered table-striped mt-4">
         <thead>
@@ -74,11 +87,44 @@
             
         </tbody>
     </table>
+         </div>
+    </div>
+    
     <div class="text-center mt-3">
         <p style="color: aqua;">Amount is displayed in your base currency: INR</p>
     </div>
 
     <script>
+        function exportToPDF() {
+     console.log("Exporting to PDF...");
+     var pdf = new jsPDF();
+     var content = document.getElementById('container'); // Replace 'container' with your container's ID
+     console.log("Content:", content);
+     pdf.fromHTML(content, 10, 10, {
+         width: 180
+     }, function (dispose) {
+         pdf.save('report.pdf');
+     });
+ }
+
+    // Function to save Excel using XLSX
+    function exportToExcel() {
+        var table = document.querySelector('table');
+        var ws = XLSX.utils.table_to_sheet(table);
+        var wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+        XLSX.writeFile(wb, 'report.xlsx');
+    }
+
+    // Function to handle export based on dropdown selection
+    document.getElementById('exportDropdown').addEventListener('change', function () {
+        var selectedValue = this.value;
+        if (selectedValue === 'pdf') {
+            exportToPDF();
+        } else if (selectedValue === 'xls') {
+            exportToExcel();
+        }
+    });
          $(function () {
         var start = moment().subtract(29, 'days');
         var end = moment();

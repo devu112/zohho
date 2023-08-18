@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    /* Your existing styles */
+
+    /* Custom styles for dropdowns and filter section */
+    .form-group label {
+        color: beige;
+        margin-bottom: 5px;
+    }
+    .close-button {
+        position: fixed;
+        top: 70px;
+        right: 70px;
+    }
+    .form-control {
+        background-color: #000000;
+        color: white;
+    }
+
+    .dropdown-menu {
+        background-color: #060606;
+    }
+
+    .dropdown-item {
+        color: white;
+    }
+
+    /* Custom styles for filter section */
+    .filter-section {
+        margin-top: 20px;
+    }
+
+    .filter-row {
+        display: flex;
+        margin-bottom: 10px;
+    }
+
+    .filter-field {
+        flex: 1;
+        margin-right: 10px;
+    }
+
+    .filter-action {
+        margin-top: auto;
+    }
+</style>
+<div class="container main-content">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Place the close button here -->
+            <a href="{% url 'salesby_item' %}" class="btn  close-button">
+                <i class="fa fa-times-circle"></i>
+            </a>
+        </div>
+    </div>
+    <div class="row row-container">
+        <div class="col-md-3 left-column">
+            <div class="custom-list-group">
+                <a class="custom-list-item" data-target="general">
+                    General
+                </a>
+                <br>
+                <br>
+                <br>
+                <a class="custom-list-item" data-target="columns">
+                    Show/Hide Columns
+                </a>
+            </div>
+        </div>
+        <div class="col-md-9 right-column">
+            <div id="general" class="custom-content">
+                <h2 style="color: aliceblue;">General </h2>
+                <div>
+                    <label for="dateRangePicker" style="color: beige;">Select Date Range:</label>
+                    <input type="text" id="dateRangePicker" class="form-control">
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="groupBySelect" style="color: beige;">Group By</label>
+                    <select id="groupBySelect" class="form-control">
+                        <option value="none">Customer name</option>
+                        <option value="customer" style="color: #060606;">Customer</option>
+                        <!-- Add more grouping options as needed -->
+                    </select>
+                </div>
+                <!-- Account Dropdown -->
+                <div class="form-group">
+                    <label for="accountSelect" style="color: beige;">Select Account:</label>
+                    <select id="accountSelect" class="form-control">
+                        <option value="all" style="color: #060606;">All Accounts</option>
+                        <option value="account1" style="color: #060606;">Account 1</option>
+                        <option value="account2" style="color: #060606;">Account 2</option>
+                        <!-- Add more account options as needed -->
+                    </select>
+                </div>
+                <div class="filter-section">
+                    <h6 style="color: aliceblue;">Advanced Filters</h6>
+                    <p style="color: #eeebeb;">Use advanced filters to filter the report based on the fields of Reports, Item.</p>
+                    <div id="filterContainer"> <!-- Added a container div -->
+                        <!-- The first filter row -->
+                        <div class="filter-row">
+                            <div class="filter-field">
+                                <label for="filterSelectField"></label>
+                                <select class="form-control">
+                                    <option style="color: black;">Select a Field</option>
+                                </select>
+                            </div>
+                            <div class="filter-field">
+                                <label for="filterSelectColumn"></label>
+                                <select class="form-control">
+                                    <option>Select a column</option>
+                                </select>
+                            </div>
+                            <div class="filter-action">
+                                <button class="btn btn-light">-</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="filter-action">
+                        <button id="addFilter" style="color: blue;" class="btn">+ Add more</button>
+                    </div>
+                </div>
+                <div id="columns" class="custom-content" style="display: none;">
+                    <div class="row column-transfer">
+                    <!-- Show/Hide Columns section -->
+                    <div class="row">
+                        <div class="col-md-6" id="originalColumn" style="height: 70vh; width:25vw; overflow-y:auto; border: 1px solid #ccc; position: relative; padding-right: 15px;">
+                            <h2 style="color: white; position: sticky; top: 0;">Available Column</h2>
+                            <div class="search-bar" style="position: sticky; top: 40px;">
+                                <input type="text" id="searchInput" class="search-input" placeholder="Search items">
+                                <span class="search-icon">&#128269;</span>
+                            </div>
+                            <ul class="item-list" style="color: #eeebeb;">
+                                <li class="items"><span class="item-text">Sales(FCY)</span> <span class="add">+</span></li>
+                                <li class="items"><span class="item-text">Sales with Tax</span> <span class="add">+</span></li>
+                                <li class="items"><span class="item-text">Company Name</span> <span class="add">+</span></li>
+                                <li class="items"><span class="item-text">First Name</span> <span class="add">+</span></li>
+                                <li class="items"><span class="item-text">Last Name</span> <span class="add">+</span></li>
+                                <li class="items"><span class="item-text">Website</span><span class="add">+</span></li>
+                                <li class="items"><span class="item-text">Customer Email</span><span class="add">+</span></li>
+                                <li class="items"><span class="item-text">Mobile Phone</span><span class="add">+</span></li>
+                                <li class="items"><span class="item-text">WorkPhone</span><span class="add">+</span></li>
+                                <li class="items"><span class="item-text">Department</span><span class="add">+</span></li>
+                                <li class="items"><span class="item-text">Designation</span><span class="add">+</span></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6" id="addedColumn" style="height: auto; max-height:70vh; width:25vw; overflow-y:auto ;border: 1px solid #ccc; padding-left: 15px;">
+                            <h2 style="color: white; position: sticky; top:0;">Selected Column</h2>
+                            <ul class="item-list" style="color: #eeebeb;"></ul>
+                        </div>
+                    </div>
+                    <!-- End Show/Hide Columns section -->
+                </div>
+            </div>
+           
+        </div>
+    </div>
+<script>
+   
+   document.addEventListener("DOMContentLoaded", function () {
+    const links = document.querySelectorAll(".custom-list-item");
+    const contents = document.querySelectorAll(".custom-content");
+    const availableItems = document.querySelectorAll("#originalColumn .items");
+    const addButtons = document.querySelectorAll("#originalColumn .add");
+    const selectedItems = document.querySelector("#addedColumn .item-list");
+    const searchInput = document.getElementById("searchInput");
+    const itemList = document.querySelector(".item-list");
+    const addFilterButton = document.getElementById("addFilter");
+    const filterRowContainer = document.querySelector(".filter-row");
+    const filterContainer = document.querySelector("#filterContainer");
+    
+    addFilterButton.addEventListener("click", () => {
+        console.log("Add more button clicked");
+
+        const filterRow = document.createElement("div");
+        filterRow.className = "filter-row";
+        filterRow.innerHTML = `
+            <div class="filter-field">
+                <label for="filterSelectField">Select a Field:</label>
+                <select class="form-control">
+                    <!-- Options for filter fields -->
+                </select>
+            </div>
+            <div class="filter-field">
+                <label for="filterSelectColumn">Select a Column Field:</label>
+                <select class="form-control">
+                    <!-- Options for column fields -->
+                </select>
+            </div>
+            <div class="filter-action">
+                <button class="btn btn-danger">-</button>
+            </div>
+        `;
+
+        const removeFilterButton = filterRow.querySelector(".btn-danger");
+        removeFilterButton.addEventListener("click", () => {
+            filterContainer.removeChild(filterRow); // Remove the filter row from the container
+        });
+
+        filterContainer.insertBefore(filterRow, addFilterButton); // Insert the new filter row above the "Add more" button
+    });
+
+    // Initialize date range picker
+    $('#dateRangePicker').daterangepicker({
+        ranges: {
+            'Today': [moment(), moment()],
+            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+            'This Month': [moment().startOf('month'), moment().endOf('month')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    }, function (start, end, label) {
+        // Callback function when a date range is selected
+        console.log('A date range was chosen: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+    });
+});
+
+</script>
+
+
+
+{% endblock %}
