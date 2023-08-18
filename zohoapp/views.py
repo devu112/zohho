@@ -7028,7 +7028,12 @@ def salesby_item(request):
     return render(request, 'salesby_item.html', {'items': items})
 
 def customize_report1(request):
-    return render(request, 'customize_report1.html')
-
-
-
+    items = AddItem.objects.all()
+    customers = customer.objects.all()
+    available_columns = ["Sales(FCY)", "Sales with Tax", "Company Name", "First Name", "Last Name", "Website",
+                         "Customer Email", "Mobile Phone", "WorkPhone", "Department", "Designation"]
+    
+    context = {
+        "available_columns": available_columns,
+    }
+    return render(request, 'customize_report1.html', {'items': items, 'customers': customers})
