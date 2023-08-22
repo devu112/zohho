@@ -10,9 +10,9 @@
         margin-bottom: 5px;
     }
 
-    .close-button {
+    #close-button {
         position: fixed;
-        top: 70px;
+        top: 100px;
         right: 70px;
     }
 
@@ -61,7 +61,7 @@
     <div class="row">
         <div class="col-md-12">
             <!-- Place the close button here -->
-            <a href="{% url 'salesby_item' %}" class="btn  close-button">
+            <a href="{% url 'salesby_item' %}"  id="close-button" style="color:  aliceblue;">
                 <i class="fa fa-times-circle"></i>
             </a>
         </div>

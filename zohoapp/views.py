@@ -7013,9 +7013,9 @@ def reports(request):
 
 def salesby_customer(request):
     customer1 = customer.objects.all()
-    for c in customer1:
-        print(c.customerName)  # This will print the customer names in the console
-    return render(request, 'salesby_customer.html', {'cust': customer1})
+    company_data = company_details.objects.first()
+    return render(request, 'salesby_customer.html', {'cust': customer1, 'company_data': company_data})
+
 
 def customize_report(request):
     return render(request, 'customize_report.html')
@@ -7025,7 +7025,8 @@ def general_customize(request):
 
 def salesby_item(request):
     items = AddItem.objects.all()
-    return render(request, 'salesby_item.html', {'items': items})
+    company_data = company_details.objects.first()
+    return render(request, 'salesby_item.html', {'items': items, 'company_data': company_data})
 
 def customize_report1(request):
     items = AddItem.objects.all()
