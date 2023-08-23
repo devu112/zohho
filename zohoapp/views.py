@@ -7018,10 +7018,11 @@ def salesby_customer(request):
 
 
 def customize_report(request):
-    return render(request, 'customize_report.html')
+    company_data = company_details.objects.get(user=request.user)
 
-def general_customize(request):
-    return render(request,'general_customize.html')    
+    return render(request, 'customize_report.html',{'company_data': company_data})
+
+
 
 def salesby_item(request):
     items = AddItem.objects.all()
@@ -7029,6 +7030,7 @@ def salesby_item(request):
     return render(request, 'salesby_item.html', {'items': items, 'company_data': company_data})
 
 def customize_report1(request):
+    company_data = company_details.objects.get(user=request.user)
     items = AddItem.objects.all()
     customers = customer.objects.all()
     available_columns = ["Sales(FCY)", "Sales with Tax", "Company Name", "First Name", "Last Name", "Website",
@@ -7037,4 +7039,4 @@ def customize_report1(request):
     context = {
         "available_columns": available_columns,
     }
-    return render(request, 'customize_report1.html', {'items': items, 'customers': customers})
+    return render(request, 'customize_report1.html', {'items': items, 'customers': customers,'company_data': company_data})

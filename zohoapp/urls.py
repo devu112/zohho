@@ -337,7 +337,6 @@ urlpatterns = [
     path('reports',views.reports,name='reports'),
     path('salesby_customer',views.salesby_customer,name='salesby_customer'),
     path('customize_report/', views.customize_report, name='customize_report'),
-    path('general_customize', views.general_customize, name='general_customize'),
     path('salesby_item',views.salesby_item,name='salesby_item'),
     path('customize_report1/', views.customize_report1, name='customize_report1'),
    

@@ -43,16 +43,16 @@
     }
 
     /* Custom styles for left column */
-    .left-column {
+     .left-column {
         background-color: rgba(rgb(235, 221, 221));
         color: white;
         padding: 20px;
         height: 50vh;
         overflow-y: auto;
         /* Add scroll if needed */
-        width: 250px;
-        /* Set the width of the left column */
-    }
+        width: 250px; 
+         /* Set the width of the left column */
+    } 
 
     /* Custom styles for right column */
     .right-column {
@@ -121,8 +121,11 @@
         padding: 20px;
         background-color: #060606;
         border-radius: 5px;
+        flex-direction: row; /* Add this line to set flex direction to row */
     }
-
+    .col-md-6 {
+        flex: 1; /* Make both columns take equal space */
+    }
     .column-list {
         background-color: rgb(4, 4, 4);
         padding: 10px;
@@ -189,7 +192,7 @@
                 <div class="row column-transfer">
                 <!-- Show/Hide Columns section -->
                 <div class="row">
-                    <div class="col-md-6" id="originalColumn" style="height: 70vh;  width:25vw; overflow-y:auto; border: 1px solid #ccc; position: relative; padding-right: 15px;">
+                    <div class="col-md-6" id="originalColumn" style="height: 70vh; width:25vw; overflow-y:auto; border: 1px solid #ccc; position: relative; padding-right: 15px;">
                         <h2 style="color: white; position: sticky; top: 0;">Available Column</h2>
                         <div class="search-bar" style="position: sticky; top: 40px;">
                             <input type="text" id="searchInput" class="search-input" placeholder="Search items">
@@ -209,9 +212,15 @@
                             <li class="items"><span class="item-text">Designation</span><span class="add">+</span></li>
                         </ul>
                     </div>
-                    <div class="col-md-6" id="addedColumn" style="height: auto; max-height:70vh; width:25vw; overflow-y:auto ;border: 1px solid #ccc; padding-left: 15px;">
+                    <!-- <div class="col-md-6" id="addedColumn" style="height: auto; max-height:70vh; width:25vw; overflow-y:auto ;border: 1px solid #ccc; padding-left: 15px;">
                         <h2 style="color: white; position: sticky; top:0;">Selected Column</h2>
                         <ul class="item-list" style="color: #eeebeb;"></ul>
+                    </div> -->
+                    <div class="col-md-6" id="addedColumn">
+                        <h2 style="color: white;">Selected Column</h2>
+                        <ul class="item-list" style="color: #eeebeb;">
+                            <!-- This is where the selected columns will be displayed -->
+                        </ul>
                     </div>
                 </div>
                 <!-- End Show/Hide Columns section -->
@@ -267,7 +276,12 @@ document.addEventListener("click", (event) => {
                 'Last 7 Days': [moment().subtract(6, 'days'), moment()],
                 'Last 30 Days': [moment().subtract(29, 'days'), moment()],
                 'This Month': [moment().startOf('month'), moment().endOf('month')],
-                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+        'Previous Quarter': [
+            moment().subtract(3, 'months').startOf('quarter'),
+            moment().subtract(3, 'months').endOf('quarter')
+        ]
             }
         }, function (start, end, label) {
             // Callback function when a date range is selected

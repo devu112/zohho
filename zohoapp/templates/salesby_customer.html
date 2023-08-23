@@ -7,37 +7,27 @@
         body * {
             visibility: hidden;
         }
-
-        .printable-content,
-        .printable-content * {
+        
+    
+    .printable-content table {
+        margin: 0 auto;
+    }
+        .printable-content, .printable-content * {
             visibility: visible;
         }
-
+        .printable-content {
+            width: 200%;
+            max-width: 100%;
+            padding: 20px;
+           
+        }
         .printable-wrapper {
             display: flex;
             justify-content: center;
             align-items: center;
-            
-          
-           
-        }
-
-        .printable-content {
-            width: 200%;
-            max-width: 100%;
-           
-        }
-
-        /* Style for table elements */
-        .printable-content table,
-        .printable-content th,
-        .printable-content td,
-        .printable-content tr {
-            border: 1px solid black; /* Set table borders to black */
-            
-           
-        }
+            width: 100vw;
     }
+}
     .daterangepicker  {
         background-color: #f0f0f0; 
         color: #000; 
@@ -71,7 +61,7 @@
                 Export
             </button>
             <div class="dropdown-menu" aria-labelledby="exportDropdown">
-                <a class="dropdown-item" id="pdf" href="#" onclick="exportToPDF()">PDF</a>
+                <a class="dropdown-item"  href="#" onclick="exportAsPDF()">PDF</a>
                 <a class="dropdown-item" href="#" onclick="exportToExcel()">XLS (Excel)</a>
             </div>
            
@@ -81,13 +71,15 @@
         </div>
     </div>
 </div>
-<div class="printable-wrapper">
-    <div class="printable-content"  id="container-to-print">
-        <h2 class="text-center mt-4" style="color: aliceblue;">{{ company_data.company_name }}</h2>
-        <h4 class="text-center mt-4" style="color: aliceblue;">Sales by Customer</h4>
-        <h5 class="text-center" style="color: aliceblue;">Basis: Accrual</h5>
-        <p class="text-center" style="color: aliceblue;">From 21 Jan 2023 To 21 Jan 2024</p>
+<div class="printable-wrapper" id="container-to-print" >
 
+    <div class="printable-content" >
+        <center>
+        <h2 class="text" style="color: white;">{{ company_data.company_name }}</h2>
+        <h4 class="text" style="color: white;">Sales by Customer</h4>
+        <h5 class="text" style="color:white;">Basis: Accrual</h5>
+        <p class="text" style="color: white;">From 21 Jan 2023 To 21 Jan 2024</p>
+    </center>
         <table class="table table-bordered table-striped mt-4">
             <thead>
                 <tr>
@@ -98,12 +90,13 @@
                 </tr>
             </thead>
             <tbody>
-                
-                    {% for i in cust %}
+                {% for i in cust %}
+                <tr>
+                   
                     <td style="color: #ccc;">{{ i.customerName }}</td>
-                    <td>10</td>
-                    <td>$1000</td>
-                    <td>$1200</td>
+                    <td style="color: #ccc;">10</td>
+                    <td style="color: #ccc;">1000</td>
+                    <td style="color: #ccc;">1200</td>
                     {% endfor %}
                 </tr>
 
@@ -119,29 +112,73 @@
 <script>
 
 
-function exportToPDF() {
-    console.log("Exporting to PDF...");
-   
-    const content = document.querySelector('.printable-wrapper');
-    const options = {
-        margin: 10,
-        filename: 'report.pdf',
+// function exportToPDF() {
+//      console.log("Exporting to PDF...");
+//      var pdf = new jsPDF();
+//      var content = document.querySelector('.printable-wrapper');
+//      console.log("Content:", content);
+//      pdf.fromHTML(content, 10, 10, {
+//          width: 180
+//      }, function (dispose) {
+//          pdf.save('report.pdf');
+//      });
+// }
+function exportAsPDF() {
+      const container = document.getElementById('container-to-print');
+    
+      // Save the original background color
+      const originalBackgroundColor = container.style.backgroundColor;
+    
+      // Set the container's background color to white
+      container.style.backgroundColor = 'white';
+    
+      // Apply styling changes to the container's content
+      const textWhiteElements = container.querySelectorAll('.text');
+      textWhiteElements.forEach(element => {
+        element.style.color = 'black'; // Set text color to black
+      });
+    
+      const tableElements = container.querySelectorAll('table');
+      const tableCells = container.querySelectorAll('td, th');
+      const tableRows = container.querySelectorAll('tr');
+    
+      tableElements.forEach(table => {
+        table.style.backgroundColor = '#ffffff'; // Set background color to white
+        table.style.color = '#000000'; // Set text color to black
+      });
+    
+      tableCells.forEach(cell => {
+        cell.style.backgroundColor = '#ffffff'; // Set background color to white
+        cell.style.color = '#000000'; // Set text color to black
+        cell.style.border = '1px solid black'; // Add a black border
+      });
+    
+      tableRows.forEach(row => {
+        row.style.backgroundColor = '#000000'; // Set background color to black
+      });
+    
+      const pdfOptions = {
+        margin: 0,
+        filename: '{{company_data.company_name}}SalesbyCustomer.pdf',
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' },
+      };
     
-    html2pdf().from(content).set(options).outputPdf().then(pdf => {
-        const blob = new Blob([pdf], { type: 'application/pdf' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = options.filename;
-        link.click();
-        URL.revokeObjectURL(url);
-    });
-}
+      // Generate PDF from the container
+      html2pdf().from(container).set(pdfOptions).save().then(() => {
 
+        // Restore the original background color
+        container.style.backgroundColor = originalBackgroundColor;
+
+        textWhiteElements.forEach(element => {
+          element.style.color = 'white'; // Restore original text color
+
+        // Remove the pdf-background class after generating the PDF
+        container.classList.remove('pdf-background');
+        });
+      });
+    }
 
     // Function to save Excel using XLSX
     function exportToExcel() {
@@ -185,7 +222,12 @@ pdfExportLink.addEventListener('click', function (event) {
                 'Last 7 Days': [moment().subtract(6, 'days'), moment()],
                 'Last 30 Days': [moment().subtract(29, 'days'), moment()],
                 'This Month': [moment().startOf('month'), moment().endOf('month')],
-                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+        'Previous Quarter': [
+            moment().subtract(3, 'months').startOf('quarter'),
+            moment().subtract(3, 'months').endOf('quarter')
+        ]
             }
         }, cb);
 
