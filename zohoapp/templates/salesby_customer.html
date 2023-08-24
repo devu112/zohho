@@ -18,7 +18,7 @@
         .printable-content {
             width: 200%;
             max-width: 100%;
-            padding: 20px;
+            padding: 60px;
            
         }
         .printable-wrapper {
@@ -54,7 +54,7 @@
     <div class="d-flex">
         <!-- Print button -->
         <button class="btn btn-light mr-2" id="pdf" onclick="display()">Print</button>
-        <div style="width: 10px;"></div>
+        <div style="width: 3px;"></div>
         <div class="dropdown">
             <button class="btn btn-light mr-3 dropdown-toggle" type="button" id="exportDropdown" data-bs-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
@@ -65,7 +65,7 @@
                 <a class="dropdown-item" href="#" onclick="exportToExcel()">XLS (Excel)</a>
             </div>
            
-            <a href="{% url 'reports' %}" style="margin: 20px; color: aliceblue;">
+            <a href="{% url 'reports' %}" class="btn btn-light" style=" color: rgb(1, 1, 1);">
                 <i class="fa fa-times-circle"></i>
             </a>
         </div>
@@ -78,7 +78,9 @@
         <h2 class="text" style="color: white;">{{ company_data.company_name }}</h2>
         <h4 class="text" style="color: white;">Sales by Customer</h4>
         <h5 class="text" style="color:white;">Basis: Accrual</h5>
-        <p class="text" style="color: white;">From 21 Jan 2023 To 21 Jan 2024</p>
+        <p class="text" style="color: white;" id="date-range-display">From {{ start_date }} To {{ end_date }}</p>
+
+        <!-- <p class="text" style="color: white;">From 21 Jan 2023 To 21 Jan 2024</p> -->
     </center>
         <table class="table table-bordered table-striped mt-4">
             <thead>
@@ -205,12 +207,13 @@ pdfExportLink.addEventListener('click', function (event) {
 });
 
 
-    $(function () {
+$(function () {
         var start = moment().subtract(29, 'days');
         var end = moment();
 
         function cb(start, end) {
             $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            $('#date-range-display').html('From ' + start.format('MMMM D, YYYY') + ' To ' + end.format('MMMM D, YYYY'));
         }
 
         $('#reportrange').daterangepicker({
@@ -224,7 +227,7 @@ pdfExportLink.addEventListener('click', function (event) {
                 'This Month': [moment().startOf('month'), moment().endOf('month')],
                 'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
                 'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-        'Previous Quarter': [
+                'Previous Quarter': [
             moment().subtract(3, 'months').startOf('quarter'),
             moment().subtract(3, 'months').endOf('quarter')
         ]
@@ -233,6 +236,8 @@ pdfExportLink.addEventListener('click', function (event) {
 
         cb(start, end);
     });
+
+
 
     // function display() {
     //     // Print the page

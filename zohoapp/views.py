@@ -7013,7 +7013,7 @@ def reports(request):
 
 def salesby_customer(request):
     customer1 = customer.objects.all()
-    company_data = company_details.objects.first()
+    company_data = company_details.objects.get(user=request.user)
     return render(request, 'salesby_customer.html', {'cust': customer1, 'company_data': company_data})
 
 
@@ -7026,7 +7026,7 @@ def customize_report(request):
 
 def salesby_item(request):
     items = AddItem.objects.all()
-    company_data = company_details.objects.first()
+    company_data = company_details.objects.get(user=request.user)
     return render(request, 'salesby_item.html', {'items': items, 'company_data': company_data})
 
 def customize_report1(request):
