@@ -15,8 +15,9 @@
     }
 
     .form-control {
-        background-color: #060606;
-        color: rgb(255, 247, 247);
+      
+        color: rgb(4, 4, 4);
+        background-color: #ffffff;
 
     }
    
@@ -51,11 +52,14 @@
     .column-transfer {
         display: flex;
         gap: 10px;
-        margin-top: 15px;
+        margin-top: 35px;
+        margin-left: 250px;
+        margin-right: 50px;
         border: 1px solid #ccc;
-        padding: 20px;
+        padding: 40px;
         background-color: #060606;
-        border-radius: 5px;
+        border-radius: 10px;
+        flex-direction: row;
         
     }
     .col-md-6 {
@@ -111,12 +115,55 @@
     color: #eae5e5; /* Light gray or beige color */
 }
 
-.add
- {
-    cursor: pointer;
-    font-size: 18px;
-    margin-left: 5px;
+
+.search-input {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  width: 100%;
+  margin-right: 10px;
 }
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.item-list {
+  list-style: none;
+  margin-top: 10px;
+}
+
+.items {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.items:last-child {
+  border-bottom: none;
+}
+
+.add,
+.remove {
+  color: rgba(238, 231, 231, 0.768);
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: none;
+}
+
+.items:hover .add,
+.items:hover .remove {
+  display: inline-block;
+}
+
 </style>
 <div class="container main-content">
     <div class="row">
@@ -178,14 +225,14 @@
                                 <label for="filterSelectField"></label>
                                 <select class="form-control" style=" background-color: #070707;">
                                     {% for items in items %}
-                                    <option value="{{ items.Name }}" style="color: #f2e3e3;">{{ items.Name }}</option>
+                                    <option value="{{ items.Name }}" style="color: #ffffff;">{{ items.Name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             <div class="filter-field">
                                 <label for="filterSelectColumn"></label>
                                 <select class="form-control" style="background-color: rgb(7, 7, 7); color: #ffffff;">
-                                    <option>Select a column</option>
+                                    <option style="color: #080808;">Select a column</option>
                                 </select>
                             </div>
                             <div class="filter-action">
@@ -213,21 +260,18 @@
                 <div class="row">
                     <div class="col-md-6" id="originalColumn"
                         style="height: 70vh; width:25vw; overflow-y:auto; border: 1px solid #ccc; position: relative; padding-right: 15px;">
-                        <h2 style="color: white; position: sticky; top: 0;">Available Column</h2>
+                        <h2 style="color: white; position: sticky; top: 0; background-color: #000000;">Available Column</h2>
                         <div class="search-bar" style="position: sticky; top: 40px;">
                             <input type="text" id="searchInput" class="search-input" placeholder="Search items">
                             <span class="search-icon">&#128269;</span>
                         </div>
                         <ul class="item-list" style="color: #eeebeb;">
-                            <li class="items"><span class="item-text">Item Name</span> <span class="add">+</span></li>
-                            <li class="items"><span class="item-text">Quantity sold</span> <span class="add">+</span>
-                            </li>
-                            <li class="items"><span class="item-text">Amount</span> <span class="add">+</span>
-                            </li>
-                            <li class="items"><span class="item-text">Length</span> <span class="add">+</span></li>
-                            <li class="items"><span class="item-text">Breadth</span> <span class="add">+</span></li>
-                            <li class="items"><span class="item-text">4</span><span class="add">+</span></li>
-                            <li class="items"><span class="item-text">Showin PDF</span><span class="add">+</span>
+                           
+                            
+                            <li class="items"><span class="item-text">Length</span> <span class="add add-remove-buttons">+</span></li>
+                            <li class="items"><span class="item-text">Breadth</span> <span class="add add-remove-buttons">+</span></li>
+                            <li class="items"><span class="item-text">4</span><span class="add add-remove-buttons">+</span></li>
+                            <li class="items"><span class="item-text">Showin PDF</span><span class="add add-remove-buttons">+</span>
                             </li>
                             <li class="items"><span class="item-text">Date Cf</span><span class="add">+</span></li>
                             <li class="items"><span class="item-text">Dropdown</span><span class="add">+</span></li>
@@ -235,21 +279,27 @@
                                     class="add">+</span></li>
                             <li class="items"><span class="item-text">Item type</span><span class="add">+</span></li>
                             <li class="items"><span class="item-text">usage unit</span><span class="add">+</span></li>
-                            <li class="items"><span class="item-text">sales description</span><span class="add">+</span>
-                            </li>
+                            <li class="items"><span class="item-text">sales description</span><span class="add">+</span></li>
                             <li class="items"><span class="item-text">sales price</span><span class="add">+</span></li>
+                            <li class="items"><span class="item-text">Purchase Description</span><span class="add">+</span></li>
+                            <li class="items"><span class="item-text">Purchase Price</span><span class="add">+</span></li>
+                            <li class="items"><span class="item-text">SKU</span><span class="add">+</span></li>
                         </ul>
                     </div>
-                    <div class="col-md-6" id="addedColumn">
+                   
+                    <div class="col-md-6" id="addedColumn" style="height: 70vh; width:25vw; overflow-y:auto; border: 1px solid #ccc; position: relative; padding-right: 15px;">
+                        
                         <h2 style="color: white;">Selected Column</h2>
                         <ul class="item-list" style="color: #eeebeb;">
-                            <li class="items"><span class="item-text">Name</span><span class="remove">-</span>
-                                <li class="items"><span class="item-text">Invoice Count</span><span class="remove">-</span>
-                                    <li class="items"><span class="item-text">sales</span><span class="remove">-</span>
-                            <li class="items"><span class="item-text">sales with Tax</span><span class="remove">-</span>
+                            <li class="items"><span class="item-text ">Item Name</span><span class="remove">-</span>
+                                <li class="items"><span class="item-text">Amount</span><span class="remove">-</span>
+                                    <li class="items"><span class="item-text">Quantity sold</span><span class="remove">-</span>
+                            <li class="items"><span class="item-text">Average Price</span><span class="remove">-</span>
                             
                         </ul>
-                    </div>
+                   
+                </div>
+               
                 </div>
                 <!-- End Show/Hide Columns section -->
             </div>
@@ -268,207 +318,36 @@
     document.addEventListener("DOMContentLoaded", function () {
         const links = document.querySelectorAll(".custom-list-item");
         const contents = document.querySelectorAll(".custom-content");
+
+
+        links.forEach((link, index) => {
+            link.addEventListener("click", () => {
+                links.forEach(link => {
+                    link.classList.remove("active-link");
+                });
+                link.classList.add("active-link");
+                contents.forEach(content => {
+                    content.style.display = "none";
+                });
+                const targetId = link.getAttribute("data-target");
+                const targetContent = document.getElementById(targetId);
+                targetContent.style.display = "block";
+            });
+        });
+
+        
+
+
         const addFilterButton = document.getElementById("addFilter");
         const filterRowContainer = document.querySelector(".filter-row");
         const filterContainer = document.querySelector("#filterContainer");
-        
-       //newcomnts
-        const availableItems = document.querySelectorAll("#originalColumn .items");
-        const addButtons = document.querySelectorAll("#originalColumn .add");
-        const selectedItems = document.querySelector("#addedColumn .item-list");
-        const searchInput = document.getElementById("searchInput");
-        
        
 
 
-//mine
-function addColumnListener(event) {
-availableItems.forEach(item => {
-            const addButton = item.querySelector(".add");
-            addButton.addEventListener("click", () => {
-                const selectedItem = item.cloneNode(true);
-                const removeButton = selectedItem.querySelector(".add");
-                removeButton.textContent = "-";
 
-                // Remove the "+" event listener
-                removeButton.removeEventListener("click", addColumnListener);
 
-                selectedItems.appendChild(selectedItem);
 
-                // Add a click event to the new remove button
-                removeButton.addEventListener("click", () => {
-                    selectedItems.removeChild(selectedItem);
-                    availableItems[index].style.display = "flex";
-                });
-            });
-        });
-    }
-//newnew
-// ...
-selectedItems.querySelectorAll(".remove").forEach(removeButton => {
-        removeButton.addEventListener("click", () => {
-            const selectedItem = removeButton.parentElement;
-            const itemName = selectedItem.querySelector(".item-text").textContent;
-
-            // Remove the item from the selected list
-            selectedItems.removeChild(selectedItem);
-
-            // Clone the item from the original column
-            const availableItem = Array.from(availableItems).find(item => {
-                return item.querySelector(".item-text").textContent === itemName;
-            });
-
-            if (availableItem) {
-                const newItem = availableItem.cloneNode(true);
-                newItem.querySelector(".add").textContent = "-";
-                newItem.querySelector(".remove").textContent = "+";
-
-                // Add event listeners to new buttons
-                newItem.querySelector(".add").addEventListener("click", addItem);
-                newItem.querySelector(".remove").addEventListener("click", removeItem);
-
-                // Append the cloned item to the available list
-                document.querySelector("#originalColumn").appendChild(newItem);
-            }
-        });
-    });
-
-    // ... (other existing code)
-
-    // Add event listeners for adding columns
-    availableItems.forEach(item => {
-        const addButton = item.querySelector(".add");
-        addButton.addEventListener("click", addItem);
-    });
-
-    function addItem(event) {
-        const addButton = event.target;
-        const item = addButton.parentElement;
-        const itemText = item.querySelector(".item-text").textContent;
-
-        // Clone the item to move it to the selected list
-        const clonedItem = item.cloneNode(true);
-        clonedItem.querySelector(".add").textContent = "+";
-        clonedItem.querySelector(".remove").textContent = "-";
         
-        // Add event listeners to new buttons
-        clonedItem.querySelector(".add").addEventListener("click", addItem);
-        clonedItem.querySelector(".remove").addEventListener("click", removeItem);
-
-        selectedItems.appendChild(clonedItem);
-        item.style.display = "none";
-    }
-
-    function removeItem(event) {
-        const removeButton = event.target;
-        const item = removeButton.parentElement;
-        const itemText = item.querySelector(".item-text").textContent;
-
-        // Remove the item from the selected list
-        selectedItems.removeChild(item);
-
-        // Show the corresponding item in the available list
-        availableItems.forEach(availableItem => {
-            if (availableItem.querySelector(".item-text").textContent === itemText) {
-                availableItem.style.display = "flex";
-            }
-        });
-    }
-// ...
-
-
-
-
-
-
-
-
-
-//showitem list
-        searchInput.addEventListener("click", (event) => {
-            event.stopPropagation(); // Prevent the click event from propagating to document
-            itemList.style.display = "block"; // Show the item list
-        });
-
-        // // Hide the item list when clicking outside the input and the list
-        // document.addEventListener("click", (event) => {
-        //     if (!searchInput.contains(event.target) && !itemList.contains(event.target)) {
-        //         itemList.style.display = "none";
-        //     }
-        // });
-
-
-
-        addButtons.forEach((button, index) => {
-            button.addEventListener("click", () => {
-                const itemText = availableItems[index].querySelector(".item-text").textContent;
-                const listItem = document.createElement("li");
-                listItem.className = "items";
-                listItem.innerHTML = `<span class="item-text">${itemText}</span> <span class="remove">-</span>`;
-                selectedItems.appendChild(listItem);
-                availableItems[index].style.display = "none";
-
-                const removeButton = listItem.querySelector(".remove");
-                removeButton.addEventListener("click", () => {
-                    selectedItems.removeChild(listItem);
-                    availableItems[index].style.display = "flex";
-                });
-            });
-        });
-
-
-        links.forEach((link, index) => {
-            link.addEventListener("click", () => {
-                links.forEach(link => {
-                    link.classList.remove("active-link");
-                });
-                link.classList.add("active-link");
-                contents.forEach(content => {
-                    content.style.display = "none";
-                });
-                const targetId = link.getAttribute("data-target");
-                const targetContent = document.getElementById(targetId);
-                targetContent.style.display = "block";
-            });
-        });
-
-        links.forEach((link, index) => {
-            link.addEventListener("click", () => {
-                links.forEach(link => {
-                    link.classList.remove("active-link");
-                });
-                link.classList.add("active-link");
-                contents.forEach(content => {
-                    content.style.display = "none";
-                });
-                const targetId = link.getAttribute("data-target");
-                const targetContent = document.getElementById(targetId);
-                targetContent.style.display = "block";
-            });
-        });
-
-
-
-        // Add event listeners for adding columns
-        availableItems.forEach(item => {
-            const addButton = item.querySelector(".add");
-            addButton.addEventListener("click", () => {
-                const selectedItem = item.cloneNode(true);
-                const removeButton = selectedItem.querySelector(".add");
-                removeButton.textContent = "-";
-
-                // Remove the "+" event listener
-                removeButton.removeEventListener("click", addColumnListener);
-
-                selectedItems.appendChild(selectedItem);
-
-                // Add a click event to the new remove button
-                removeButton.addEventListener("click", () => {
-                    selectedItems.removeChild(selectedItem);
-                });
-            });
-        });
-
         addFilterButton.addEventListener("click", () => {
             console.log("Add more button clicked");
 
@@ -477,15 +356,15 @@ selectedItems.querySelectorAll(".remove").forEach(removeButton => {
             filterRow.innerHTML = `
     <div class="filter-field">
             <label for="filterSelectField"></label>
-            <select class="form-control">
+            <select class="form-control" style=" background-color: #070707;">
             {% for items in items %}
-                <option value="{{ items.Name }}">{{ items.Name }}</option>
+                <option value="{{ items.Name }}" style="color: white;">{{ items.Name }}</option>
             {% endfor %}
             </select>
         </div>
         <div class="filter-field">
             <label for="filterSelectColumn"></label>
-            <select class="form-control">
+            <select class="form-control" style="background-color: rgb(7, 7, 7); color: #ffffff;">
                 <option>Select a column</option>
             </select>
         </div>
@@ -548,6 +427,102 @@ selectedItems.querySelectorAll(".remove").forEach(removeButton => {
 
 
 </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const originalAvailableItems = document.querySelectorAll("#originalColumn .items");
+      const originalAddButtons = document.querySelectorAll("#originalColumn .add");
+      const selectedItems = document.querySelector("#addedColumn .item-list");
+      const addedRemoveButtons = document.querySelectorAll("#addedColumn .remove");
+      const searchInput = document.getElementById("searchInput");
+      const searchIcon = document.querySelector(".search-icon");
+    
+      const itemIds = {}; // Map of item text to unique identifier
+    
+      originalAddButtons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+          const itemText = originalAvailableItems[index].querySelector(".item-text").textContent;
+          const itemId = `selected-${itemText}`; // Unique identifier
+          itemIds[itemText] = itemId;
+          const listItem = document.createElement("li");
+          listItem.className = "items";
+          listItem.innerHTML = `<span class="item-text">${itemText}</span> <span class="remove">-</span>`;
+          listItem.setAttribute("data-item-id", itemId); // Set the unique identifier
+          selectedItems.appendChild(listItem);
+          originalAvailableItems[index].style.display = "none";
+    
+          const removeButton = listItem.querySelector(".remove");
+          removeButton.addEventListener("click", () => {
+            selectedItems.removeChild(listItem);
+            originalAvailableItems[index].style.display = "flex";
+          });
+        });
+      });
+    
+      addedRemoveButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const selectedItem = button.parentNode;
+          const itemText = selectedItem.querySelector(".item-text").textContent;
+          const itemId = itemIds[itemText]; // Get the unique identifier
+      
+          // Create a new list item for the available column
+          const listItem = document.createElement("li");
+          listItem.className = "items";
+          listItem.innerHTML = `<span class="item-text">${itemText}</span> <span class="add">+</span>`;
+          listItem.setAttribute("data-item-id", itemId); // Set the unique identifier
+          
+          // Insert the new item at the beginning of the available items
+          originalAvailableItems[0].parentNode.insertBefore(listItem, originalAvailableItems[0]);
+          
+          // Remove the selected item from the selected column
+          selectedItems.removeChild(selectedItem);
+      
+          const addButton = listItem.querySelector(".add");
+          addButton.addEventListener("click", () => {
+            // Logic when adding an item back to the selected column
+            // ...
+            
+            // Remove the item from the available column and show it in the selected column
+            listItem.parentNode.removeChild(listItem);
+            selectedItems.appendChild(selectedItem);
+          });
+        });
+      });
+    
+      searchIcon.addEventListener("click", () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        originalAvailableItems.forEach(item => {
+          const itemText = item.querySelector(".item-text").textContent.toLowerCase();
+          if (itemText.includes(searchTerm)) {
+            item.style.display = "flex";
+            if (searchTerm !== "") {
+              item.classList.add("highlight");
+            } else {
+              item.classList.remove("highlight");
+            }
+          } else {
+            item.style.display = "none";
+            item.classList.remove("highlight");
+          }
+        });
+    
+        selectedItems.querySelectorAll(".items").forEach(item => {
+          const itemText = item.querySelector(".item-text").textContent.toLowerCase();
+          if (itemText.includes(searchTerm)) {
+            item.style.display = "flex";
+            if (searchTerm !== "") {
+              item.classList.add("highlight");
+            } else {
+              item.classList.remove("highlight");
+            }
+          } else {
+            item.style.display = "none";
+            item.classList.remove("highlight");
+          }
+        });
+      });
+    });    
+  </script>
 
 
 

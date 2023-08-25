@@ -143,6 +143,62 @@
         padding: 5px 10px;
         border-radius: 3px;
     }
+    .search-input {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  width: 100%;
+  margin-right: 10px;
+  color: #060606;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+.item-list {
+  list-style: none;
+  margin-top: 10px;
+}
+
+.items {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.items:last-child {
+  border-bottom: none;
+}
+
+.add,
+.remove {
+  color: rgb(234, 221, 221);
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: none;
+}
+
+.items:hover .add,
+.items:hover .remove {
+  display: inline-block;
+}
+.highlight {
+    background-color: #f0f0f0;
+}
+.highlight {
+    background-color: #dcdcdc; /* Use a darker shade for better visibility */
+    color: black; /* Set the text color to black for better contrast */
+}
+
 </style>
 
 <div class="container main-content">
@@ -199,8 +255,7 @@
                             <span class="search-icon">&#128269;</span>
                         </div>
                         <ul class="item-list" style="color: #eeebeb;">
-                            <li class="items"><span class="item-text">Sales(FCY)</span> <span class="add">+</span></li>
-                            <li class="items"><span class="item-text">Sales with Tax</span> <span class="add">+</span></li>
+                            
                             <li class="items"><span class="item-text">Company Name</span> <span class="add">+</span></li>
                             <li class="items"><span class="item-text">First Name</span> <span class="add">+</span></li>
                             <li class="items"><span class="item-text">Last Name</span> <span class="add">+</span></li>
@@ -216,10 +271,13 @@
                         <h2 style="color: white; position: sticky; top:0;">Selected Column</h2>
                         <ul class="item-list" style="color: #eeebeb;"></ul>
                     </div> -->
-                    <div class="col-md-6" id="addedColumn">
+                    <div class="col-md-6" id="addedColumn" style="height: 70vh; width:25vw; overflow-y:auto; border: 1px solid #ccc; position: relative; padding-right: 15px;">
                         <h2 style="color: white;">Selected Column</h2>
                         <ul class="item-list" style="color: #eeebeb;">
-                            <!-- This is where the selected columns will be displayed -->
+                            <li class="items"><span class="item-text ">Name</span><span class="remove">-</span>
+                                <li class="items"><span class="item-text">Invoice Count</span><span class="remove">-</span>
+                                    <li class="items"><span class="item-text">sales(FCY)</span><span class="remove">-</span>
+                            <li class="items"><span class="item-text">sales with Tax</span><span class="remove">-</span> 
                         </ul>
                     </div>
                 </div>
@@ -231,26 +289,10 @@
 </div>
 
 <script>
-   document.addEventListener("DOMContentLoaded", function () {
-        const links = document.querySelectorAll(".custom-list-item");
-        const contents = document.querySelectorAll(".custom-content");
-        const availableItems = document.querySelectorAll("#originalColumn .items");
-        const addButtons = document.querySelectorAll("#originalColumn .add");
-        const selectedItems = document.querySelector("#addedColumn .item-list");
-        const searchInput = document.getElementById("searchInput");
-        const itemList = document.querySelector(".item-list");
-
-searchInput.addEventListener("click", (event) => {
-    event.stopPropagation(); // Prevent the click event from propagating to document
-    itemList.style.display = "block"; // Show the item list
-});
-
-// Hide the item list when clicking outside the input and the list
-document.addEventListener("click", (event) => {
-    if (!searchInput.contains(event.target) && !itemList.contains(event.target)) {
-        itemList.style.display = "none";
-    }
-});
+   document.addEventListener("DOMContentLoaded", () => {
+    const links = document.querySelectorAll(".custom-list-item");
+    const contents = document.querySelectorAll(".custom-content");
+    
       
 
         links.forEach((link, index) => {
@@ -267,9 +309,93 @@ document.addEventListener("click", (event) => {
                 targetContent.style.display = "block";
             });
         });
+//logic for show/hide columns
+const originalAvailableItems = document.querySelectorAll("#originalColumn .items");
+      const originalAddButtons = document.querySelectorAll("#originalColumn .add");
+      const selectedItems = document.querySelector("#addedColumn .item-list");
+      const addedRemoveButtons = document.querySelectorAll("#addedColumn .remove");
+      const searchInput = document.getElementById("searchInput");
+      const searchIcon = document.querySelector(".search-icon");
 
-        // Initialize date range picker
-        $('#dateRangePicker').daterangepicker({
+      const itemIds = {}; // Map of item text to unique identifier
+
+      originalAddButtons.forEach((button, index) => {
+        button.addEventListener("click", () => {
+          const itemText = originalAvailableItems[index].querySelector(".item-text").textContent;
+          const itemId = `selected-${itemText}`; // Unique identifier
+          itemIds[itemText] = itemId;
+          const listItem = document.createElement("li");
+          listItem.className = "items";
+          listItem.innerHTML = `<span class="item-text">${itemText}</span> <span class="remove">-</span>`;
+          listItem.setAttribute("data-item-id", itemId); // Set the unique identifier
+          selectedItems.appendChild(listItem);
+          originalAvailableItems[index].style.display = "none";
+
+          const removeButton = listItem.querySelector(".remove");
+          removeButton.addEventListener("click", () => {
+            selectedItems.removeChild(listItem);
+            originalAvailableItems[index].style.display = "flex";
+          });
+        });
+      });
+
+      addedRemoveButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const selectedItem = button.parentNode;
+          const itemText = selectedItem.querySelector(".item-text").textContent;
+          const itemId = itemIds[itemText]; // Get the unique identifier
+
+          const listItem = document.createElement("li");
+          listItem.className = "items";
+          listItem.innerHTML = `<span class="item-text">${itemText}</span> <span class="add">+</span>`;
+          listItem.setAttribute("data-item-id", itemId); // Set the unique identifier
+
+          originalAvailableItems[0].parentNode.insertBefore(listItem, originalAvailableItems[0]);
+          selectedItems.removeChild(selectedItem);
+
+          const addButton = listItem.querySelector(".add");
+          addButton.addEventListener("click", () => {
+            selectedItems.appendChild(selectedItem);
+            originalAvailableItems[0].parentNode.removeChild(listItem);
+          });
+        });
+      });
+
+      searchInput.addEventListener("input", () => {
+    const searchTerm = searchInput.value.toLowerCase();
+    originalAvailableItems.forEach(item => {
+        const itemText = item.querySelector(".item-text").textContent.toLowerCase();
+        if (itemText.includes(searchTerm)) {
+            item.style.display = "flex";
+            if (searchTerm !== "") {
+                item.classList.add("highlight");
+            } else {
+                item.classList.remove("highlight");
+            }
+        } else {
+            item.style.display = "none";
+            item.classList.remove("highlight");
+        }
+    });
+
+    selectedItems.querySelectorAll(".items").forEach(item => {
+        const itemText = item.querySelector(".item-text").textContent.toLowerCase();
+        if (itemText.includes(searchTerm)) {
+            item.style.display = "flex";
+            if (searchTerm !== "") {
+                item.classList.add("highlight");
+            } else {
+                item.classList.remove("highlight");
+            }
+        } else {
+            item.style.display = "none";
+            item.classList.remove("highlight");
+        }
+    });
+});
+
+       // Initialize date range picker
+       $('#dateRangePicker').daterangepicker({
             ranges: {
                 'Today': [moment(), moment()],
                 'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -287,45 +413,37 @@ document.addEventListener("click", (event) => {
             // Callback function when a date range is selected
             console.log('A date range was chosen: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
         });
+    
+    });
 
-        // JavaScript code for show/hide columns (same as before)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
        
 
-        addButtons.forEach((button, index) => {
-            button.addEventListener("click", () => {
-                const itemText = availableItems[index].querySelector(".item-text").textContent;
-                const listItem = document.createElement("li");
-                listItem.className = "items";
-                listItem.innerHTML = `<span class="item-text">${itemText}</span> <span class="remove">-</span>`;
-                selectedItems.appendChild(listItem);
-                availableItems[index].style.display = "none";
-
-                const removeButton = listItem.querySelector(".remove");
-                removeButton.addEventListener("click", () => {
-                    selectedItems.removeChild(listItem);
-                    availableItems[index].style.display = "flex";
-                });
-            });
-        });
-
-        searchIcon.addEventListener("click", () => {
-            const searchTerm = searchInput.value.toLowerCase();
-            availableItems.forEach(item => {
-                const itemText = item.querySelector(".item-text").textContent.toLowerCase();
-                if (itemText.includes(searchTerm)) {
-                    item.style.display = "flex";
-                    if (searchTerm !== "") {
-                        item.classList.add("highlight");
-                    } else {
-                        item.classList.remove("highlight");
-                    }
-                } else {
-                    item.style.display = "none";
-                    item.classList.remove("highlight");
-                }
-            });
-        });
-    });
+       
+    
     
     
 </script>
