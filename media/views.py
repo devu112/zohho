@@ -7012,3 +7012,6 @@ def reports(request):
 
 def salesby_customer(request):
     return render(request,'salesby_customer.html')
+
+def creditnotes(request):
+    return render(request,'creditnotes.html')

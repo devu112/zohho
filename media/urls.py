@@ -336,6 +336,7 @@ urlpatterns = [
     path('delete_payrollcomment/<int:cid>',views.delete_payrollcomment,name='delete_payrollcomment'),
     path('reports',views.reports,name='reports'),
     path('salesby_customer',views.salesby_customer,name='salesby_customer'),
+    path('creditnotes',views.creditnotes,name='creditnotes'),
     
     
     # re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
